@@ -12,7 +12,7 @@ const generateToken = (user) => {
 
 // Register a new user
 const registerUser = async (req, res) => {
-    const { name, email, password } = req.body; 
+    const { name, email, password } = req.body ?? {}; 
     try {
         // Check if user already exists
         const existingUser = await User.findOne({ email });
@@ -34,10 +34,10 @@ const registerUser = async (req, res) => {
             await sendEmail(email, 'Account Created', message); // Send the OTP email
 
             res.status(201).json({ 
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                generatedToken: generateToken(user),
+                _id: newUser._id,
+                name: newUser.name,
+                email: newUser.email,
+                generatedToken: generateToken(newUser),
                 message: 'User registered successfully. Please check your email for the OTP.',
             });
         }else{
