@@ -64,3 +64,23 @@ export const deleteProduct = async (req , res) =>{
     }
 }
 
+//update product by ID
+export const updateProduct = async (req , res) =>{
+    try{
+        const product = await Product.findById(req.params.id) ;
+        if(!product){
+            return res.status(404).json({message : "Product not found"});
+        }
+        const { name, description, price, category, stock } = req.body;
+        const image = req.file ? req.file.path : product.imageUrl; // Use existing image if no new image is uploaded
+        if(image !== product.imageUrl){
+            // Upload new image to Cloudinary
+            const result = await cloudinary.uploader.upload(image);
+            image = result.secure_url;
+        }
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, { name, description, price, category, stock, imageUrl: image }, { new: true });
+        res.status(200).json(updatedProduct);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
