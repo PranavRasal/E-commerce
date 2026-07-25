@@ -9,7 +9,3 @@ cloudinary.config({
 });
 
 export default cloudinary;
-
-CLOUDINARY_CLOUD_NAME
-CLOUDINARY_API_KEY
-CLOUDINARY_API_SECRET

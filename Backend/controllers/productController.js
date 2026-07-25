@@ -1,5 +1,5 @@
-import Product from "../modules/product.module";
-import cloudinary from "../utils/cloudinary.js";
+import Product from "../modules/product.module.js";
+import cloudinary from "../config/cloudinary.js";
 
 // Create a new product
 export const createProduct = async (req, res) => {
@@ -37,6 +37,7 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
+
 //Get product by ID
 export const getProductById = async (req , res) =>{
     try{
@@ -72,13 +73,20 @@ export const updateProduct = async (req , res) =>{
             return res.status(404).json({message : "Product not found"});
         }
         const { name, description, price, category, stock } = req.body;
-        const image = req.file ? req.file.path : product.imageUrl; // Use existing image if no new image is uploaded
+    let image = req.file ? req.file.path : product.imageUrl; // Use existing image if no new image is uploaded
         if(image !== product.imageUrl){
             // Upload new image to Cloudinary
             const result = await cloudinary.uploader.upload(image);
             image = result.secure_url;
         }
-        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, { name, description, price, category, stock, imageUrl: image }, { new: true });
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, { 
+            name : name || product.name, 
+            description : description || product.description,
+            price : price || product.price,
+            category : category || product.category, 
+            stock : stock || product.stock,
+            imageUrl : image || product.imageUrl },
+             { new: true });
         res.status(200).json(updatedProduct);
     } catch (error) {
         res.status(500).json({ message: error.message });
