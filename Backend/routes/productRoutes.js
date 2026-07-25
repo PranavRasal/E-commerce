@@ -7,9 +7,9 @@ const upload = multer({ dest: 'uploads/' }); // Configure multer to store upload
 
 const router = express.Router();
 
-router.route('/').get(getAllProducts).post(protect , admin , upload.single('image'), createProduct);
+router.route('/').get(getAllProducts).post(protect , admin , upload.single('imageUrl'), createProduct);
 router.route('/:id').get(getProductById)
-        .put(protect , admin , upload.single('image'), updateProduct)
+        .put(protect , admin , upload.single('imageUrl'), updateProduct)
         .delete(protect , admin , deleteProduct);
 
 

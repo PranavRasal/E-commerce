@@ -5,7 +5,10 @@ import cloudinary from "../config/cloudinary.js";
 export const createProduct = async (req, res) => {
   try {
     const { name, description, price, category, stock } = req.body;
-    const image = req.file.path; // Assuming you're using multer for file uploads
+        if (!req.file) {
+            return res.status(400).json({ message: "Product image is required" });
+        }
+        const image = req.file.path; // Assuming you're using multer for file uploads
 
     // Upload image to Cloudinary
     const result = await cloudinary.uploader.upload(image);
