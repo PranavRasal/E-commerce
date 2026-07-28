@@ -8,9 +8,9 @@ const upload = multer({ dest: 'uploads/' }); // Configure multer to store upload
 const router = express.Router();
 
 router.route('/').get(getAllProducts).post(protect , admin , upload.single('imageUrl'), createProduct);
-router.route('/:id').get(getProductById)
-        .put(protect , admin , upload.single('imageUrl'), updateProduct)
-        .delete(protect , admin , deleteProduct);
+router.route('/:id').get(getProductById) // route for getting a product by ID
+        .put(protect , admin , upload.single('imageUrl'), updateProduct) // route for updating a product by ID
+        .delete(protect , admin , deleteProduct); // route for deleting a product by ID
 
 
 export default router;

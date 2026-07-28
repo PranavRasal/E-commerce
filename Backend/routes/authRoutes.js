@@ -4,7 +4,7 @@ import protect from '../middleware/authmiddleware.js';
 import admin from '../middleware/adminMiddleware.js';
 
 
-const router = express.Router();
+const router = express.Router(); 
 
 router.post('/register', registerUser);// Public route for user registration
 router.post('/login', loginUser); // Public route for user login
