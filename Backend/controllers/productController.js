@@ -1,4 +1,4 @@
-import Product from "../modules/product.module.js";
+import Product from "../models/product.model.js";
 import cloudinary from "../config/cloudinary.js";
 
 // Create a new product
