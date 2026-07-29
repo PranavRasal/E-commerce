@@ -16,15 +16,24 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-})
-
 app.use('/api/auth' , authRoutes);
 app.use('/api/product' , productRoutes); 
 app.use('/api/order' , orderRoutes);
 app.use('/api/payment' , paymentRoutes);
 app.use('/api/analytics' , analyticsRoutes);
+
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({
+      message: 'Invalid JSON payload. Please send valid JSON with double quotes around property names.'
+    });
+  }
+  next(err);
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+})
 // app.get('/', (req, res) => {
 //   res.send('API is running...');
 // })

@@ -4,18 +4,30 @@ import sendEmail from '../utils/sendEmail.js';
 const createOrder = async (req, res) => {
     try {
         const { products, address, totalAmount, paymentid } = req.body;
-        const userId = req.user._id;
+
+        if (!products || !address || totalAmount === undefined || !paymentid) {
+            return res.status(400).json({ message: 'Missing required order fields' });
+        }
+
+        const userId = req.user?._id;
+        if (!userId) {
+            return res.status(401).json({ message: 'User not authenticated' });
+        }
 
         const order = await Order.create({
             user: userId,
-            products ,
+            products,
             address,
             totalAmount,
             paymentid
         });
-        const message = `Your order with ID ${order._id} of product ${order.products[0].productid.name} has been successfully placed. Total Amount: ${totalAmount}. Thank you for shopping with us!`;
-        await sendEmail(req.user.email, message);
-        res.status(201).json(order);
+
+        const firstProduct = order.products?.[0];
+        const productName = firstProduct?.productid?.name || 'your selected product';
+        const message = `Your order with ID ${order._id} of product ${productName} has been successfully placed. Total Amount: ${totalAmount}. Thank you for shopping with us!`;
+
+        await sendEmail(req.user.email, 'Order Placed', message);
+        res.status(201).json({ order, message: 'Order created and email sent successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
