@@ -15,3 +15,4 @@ router.get('/', protect, admin, getAllOrders);
 router.put('/:id/status', protect, admin, updateOrderStatus);
 
 export default router;
+
