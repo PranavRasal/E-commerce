@@ -21,4 +21,4 @@ function productCart({ product }) {
   )
 }
 
-export default productCart
+export default productCart ;

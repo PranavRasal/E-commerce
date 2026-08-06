@@ -1,16 +1,20 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link , useNavigate } from 'react-router-dom'
 import logo from '../assets/logo.png'
 import { useContext } from 'react';
 import { AuthContext } from '../context/authContract.js';
+import { useSelector } from 'react-redux';
+
 
 
 function navbar() {
   const { user , setUser , logout} = useContext(AuthContext);
+  const cartItems = useSelector((state) => state.cart.items);
+  const navigate = useNavigate();
 
   const logoutButton = () => {
     logout();
-    setUser(null);
+    navigate('/login');
   }
   return (
     <div className='relative flex items-center justify-between p-4 bg-gray-800 text-white'>
@@ -28,7 +32,7 @@ function navbar() {
             <Link to="/shop">Shop</Link>
           </li>
           <li className='flex items-center justify-center rounded-full px-3 py-1 transition duration-200 hover:bg-white hover:text-gray-800 hover:shadow-md'>
-            <Link to="/cart">Cart</Link>
+            <Link to="/cart">Cart ({cartItems.length})</Link>
           </li>
           <li className='flex items-center justify-center rounded-full px-3 py-1 transition duration-200 hover:bg-white hover:text-gray-800 hover:shadow-md'>
             <Link to="/admin">Admin</Link>
