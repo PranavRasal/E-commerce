@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 
 function navbar() {
   const { user , setUser , logout} = useContext(AuthContext);
-  const cartItems = useSelector((state) => state.cart.items);
+  const cartItems = useSelector((state) => state.cart?.cartItems ?? []);
   const navigate = useNavigate();
 
   const logoutButton = () => {

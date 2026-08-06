@@ -1,6 +1,7 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-function productCart({ product }) {
+function ProductCart({ product }) {
   return (
     <div>
         <Link to={`/product/${product._id}`} className='flex items-center justify-between p-4 border-b border-gray-300'>
@@ -21,4 +22,4 @@ function productCart({ product }) {
   )
 }
 
-export default productCart ;
+export default ProductCart ;
