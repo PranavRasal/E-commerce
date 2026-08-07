@@ -15,20 +15,20 @@ function Footer() {
         <div>
           <h3 className='mb-4 text-lg font-semibold text-white'>Quick Links</h3>
           <ul className='space-y-2 text-sm'>
-            <li><a href='/' className='transition hover:text-white'>Home</a></li>
-            <li><a href='/shop' className='transition hover:text-white'>Shop</a></li>
-            <li><a href='/cart' className='transition hover:text-white'>Cart</a></li>
-            <li><a href='/admin' className='transition hover:text-white'>Admin</a></li>
+            <li><a href='/about' className='transition hover:text-white'>About</a></li>
+            <li><a href='/return-policy' className='transition hover:text-white'>Return Policy</a></li>
+            <li><a href='/disclaimer' className='transition hover:text-white'>Disclaimer</a></li>
+            
           </ul>
         </div>
 
         <div>
           <h3 className='mb-4 text-lg font-semibold text-white'>Categories</h3>
           <ul className='space-y-2 text-sm'>
-            <li><a href='/' className='transition hover:text-white'>Electronics</a></li>
-            <li><a href='/' className='transition hover:text-white'>Fashion</a></li>
-            <li><a href='/' className='transition hover:text-white'>Home & Living</a></li>
-            <li><a href='/' className='transition hover:text-white'>Accessories</a></li>
+            <li >Electronics</li>
+            <li>Fashion</li>
+            <li>Home & Living</li>
+            <li>Accessories</li>
           </ul>
         </div>
 

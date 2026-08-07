@@ -28,13 +28,13 @@ function Home() {
 
 
   return (
-    <div>
-      <h1>welcome to E-comHub</h1>
-      <h2>Featured Products </h2>
+    <div className='p-4'>
+      <h1 className='mb-1 text-2xl font-semibold text-gray-900'>Welcome to E-comHub</h1>
+      <h2 className='mb-4 text-lg text-gray-700'>Featured Products</h2>
       {loading ? (
-        <p>Loading...</p>
+        <p className='text-gray-600'>Loading...</p>
       ) : (
-        <div>
+        <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4'>
           {products.map((product) => (
             <ProductCart key={product._id} product={product} />
           ))}
