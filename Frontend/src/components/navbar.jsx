@@ -17,52 +17,37 @@ function navbar() {
     navigate('/login');
   }
   return (
-    <div className='relative flex items-center justify-between p-4 bg-gray-800 text-white'>
+    <header className='border-b border-gray-700 bg-gray-800 text-white'>
+      <div className='mx-auto flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8'>
         <Link to='/' className='flex items-center space-x-2'>
-            <img src={logo} alt="logo" className='h-8 w-8 rounded-2xl mr-2' />
-            <span>E-comHub</span>
+          <img src={logo} alt='logo' className='mr-2 h-8 w-8 rounded-2xl' />
+          <span className='text-lg font-semibold'>E-comHub</span>
         </Link>
-        
-     <div className='absolute left-1/2 -translate-x-1/2 flex items-center'>
-        <ul className='flex items-center justify-center space-x-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm'>
-          <li className='flex items-center justify-center rounded-full px-3 py-1 transition duration-200 hover:bg-white hover:text-gray-800 hover:shadow-md'>
-            <Link to="/">Home</Link>
-          </li>
-          <li className='flex items-center justify-center rounded-full px-3 py-1 transition duration-200 hover:bg-white hover:text-gray-800 hover:shadow-md'>
-            <Link to="/shop">Shop</Link>
-          </li>
-          <li className='flex items-center justify-center rounded-full px-3 py-1 transition duration-200 hover:bg-white hover:text-gray-800 hover:shadow-md'>
-            <Link to="/cart">Cart ({cartItems.length})</Link>
-          </li>
-          <li className='flex items-center justify-center rounded-full px-3 py-1 transition duration-200 hover:bg-white hover:text-gray-800 hover:shadow-md'>
-            <Link to="/admin">Admin</Link>
-          </li>
-          <li className='flex items-center justify-center rounded-full px-3 py-1 transition duration-200 hover:bg-white hover:text-gray-800 hover:shadow-md'>
-            <Link to="/orders">Orders</Link>
-          </li>
+
+        <nav className='flex flex-wrap items-center justify-end gap-2'>
+          <Link to='/' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Home</Link>
+          <Link to='/shop' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Shop</Link>
+          <Link to='/cart' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Cart ({cartItems.length})</Link>
+          <Link to='/orders' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Orders</Link>
+
           {user ? (
             user.role === 'admin' ? (
-              <li className='flex items-center justify-center rounded-full px-3 py-1 transition duration-200 hover:bg-white hover:text-gray-800 hover:shadow-md'>
-                <Link to="/admin">Admin</Link>
-              </li>
+              <>
+                <Link to='/admin' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Admin</Link>
+                <button onClick={logoutButton} className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Logout</button>
+              </>
             ) : (
-              <div>
-                <li className='flex items-center justify-center rounded-full px-3 py-1 transition duration-200 hover:bg-white hover:text-gray-800 hover:shadow-md'>
-                <button onClick={profile}>Hi..{user.name} Profile</button>
-              </li>
-              <li className='flex items-center justify-center rounded-full px-3 py-1 transition duration-200 hover:bg-white hover:text-gray-800 hover:shadow-md'>
-                <button onClick={logoutButton}>Logout</button>
-              </li>
-              </div>
+              <>
+                <span className='rounded-full px-3 py-1 text-sm text-gray-200'>Hi, {user.name}</span>
+                <button onClick={logoutButton} className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Logout</button>
+              </>
             )
           ) : (
-            <li className='flex items-center justify-center rounded-full px-3 py-1 transition duration-200 hover:bg-white hover:text-gray-800 hover:shadow-md'>
-              <Link to="/login">Login</Link>
-            </li>
+            <Link to='/login' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Login</Link>
           )}
-        </ul>
-     </div>
-    </div>
+        </nav>
+      </div>
+    </header>
   )
 }
 
