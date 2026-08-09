@@ -10,16 +10,16 @@ function App() {
   return (
     <div className='flex min-h-screen flex-col'>
       <Router>
-        <Navbar />
+        <Navbar /> // added the Navbar component to the top of the page
         <main className='flex-1'>
-          <Routes>
+          <Routes> // added the Routes component to handle routing between pages
             <Route path='/' element={<Home />} />
             <Route path='/about' element={<About />} />
             <Route path='/return-policy' element={<ReturnPolicy />} />
             <Route path='/disclaimer' element={<Disclaimer />} />
           </Routes>
         </main>
-        <Footer />
+        <Footer />  // added the Footer component to the bottom of the page
       </Router>
     </div>
   )
