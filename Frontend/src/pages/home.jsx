@@ -1,15 +1,21 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import ProductCart from '../components/productCart'
 
 function Home() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
+
+  const productDetail = (productId) => {
+    navigate(`/product/${productId}`)
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_URL_API}product/`)
+        const response = await fetch('/api/product/')
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`)
         }
@@ -36,7 +42,11 @@ function Home() {
       ) : (
         <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4'>
           {products.map((product) => (
-            <ProductCart key={product._id} product={product} />
+            <ProductCart
+              key={product._id}
+              product={product}
+              onClick={() => productDetail(product._id)}
+            />
           ))}
         </div>
       )}

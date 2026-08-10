@@ -6,6 +6,7 @@ import Disclaimer from './pages/disclaimer'
 import Footer from './components/footer'
 import Register from './pages/register'
 import Login from './pages/login'
+import ProductDetail from './pages/productDetail'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -14,13 +15,14 @@ function App() {
       <Router>
         <Navbar /> 
         <main className='flex-1'>
-          <Routes> // added the Routes component to handle routing between pages
+          <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/about' element={<About />} />
             <Route path='/return-policy' element={<ReturnPolicy />} />
             <Route path='/disclaimer' element={<Disclaimer />} />
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login />} />
+            <Route path='/product/:id' element={<ProductDetail />} />
           </Routes>
         </main>
         <Footer />  // added the Footer component to the bottom of the page

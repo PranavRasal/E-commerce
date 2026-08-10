@@ -1,11 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 
-function ProductCart({ product }) {
+function ProductCart({ product, onClick }) {
   return (
-    <Link
-      to={`/product/${product._id}`}
-      className='flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md'
+    <button
+      type='button'
+      onClick={onClick}
+      className='flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white text-left shadow-sm transition hover:-translate-y-1 hover:shadow-md'
     >
       <img
         src={product.imageUrl}
@@ -18,7 +18,7 @@ function ProductCart({ product }) {
         <p className='mt-1 text-xs text-gray-600'>${product.price}</p>
         <p className='mt-1 text-xs text-gray-500'>Qty: {product.stock}</p>
       </div>
-    </Link>
+    </button>
   )
 }
 

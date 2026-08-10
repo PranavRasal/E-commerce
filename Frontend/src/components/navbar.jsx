@@ -23,6 +23,9 @@ function navbar() {
           <img src={logo} alt='logo' className='mr-2 h-8 w-8 rounded-2xl' />
           <span className='text-lg font-semibold'>E-comHub</span>
         </Link>
+        {user && (
+          <span className='text-xl text-sm text-white'>Welcome, {user.name}</span>
+        )}
 
         <nav className='flex flex-wrap items-center justify-end gap-2'>
           <Link to='/' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Home</Link>
@@ -38,7 +41,7 @@ function navbar() {
               </>
             ) : (
               <>
-                <span className='rounded-full px-3 py-1 text-sm text-gray-200'>Hi, {user.name}</span>
+                
                 <button onClick={logoutButton} className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Logout</button>
               </>
             )
