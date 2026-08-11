@@ -142,4 +142,15 @@ const updateUserCart = async (req, res) => {
     }
 };
 
-export { registerUser, loginUser, getAllUsers, updateUserCart };
+const getUserCart = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const user = await User.findById(userId);
+        res.json({ cart: user.cart });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+export { registerUser, loginUser, getAllUsers, updateUserCart, getUserCart };

@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser , loginUser , getAllUsers , updateUserCart } from '../controllers/authController.js';
+import { registerUser , loginUser , getAllUsers , updateUserCart , getUserCart } from '../controllers/authController.js';
 import protect from '../middleware/authmiddleware.js';
 import admin from '../middleware/adminMiddleware.js';
 
@@ -10,5 +10,6 @@ router.post('/register', registerUser);// Public route for user registration
 router.post('/login', loginUser); // Public route for user login
 router.get('/users', protect , admin , getAllUsers); // for admin only, you can add role-based authorization later
 router.put('/user/:userId/cart/:productId', protect, updateUserCart); // Update a single cart item by product id
+router.get('/user/:userId/cart', protect, getUserCart); // Get the cart for a specific user
 
 export default router;

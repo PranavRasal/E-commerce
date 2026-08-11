@@ -15,12 +15,42 @@ function ProductDetail({ productId }) {
 
   const id = routeId
 
-  const handleAddToCart = () => {
-    if (!productData) {
+  const handleAddToCart = async (productData) => {
+    if (!user) {
+      window.alert('Please log in to add products to your cart.')
+      return
+    }
+    const userId = user._id ?? user.id
+    const productId = productData._id ?? productData.id
+    const storedUser = JSON.parse(localStorage.getItem('userInfo') || 'null')
+    const token = user.generatedToken ?? storedUser?.generatedToken
+
+    if (!userId || !productId || !token) {
+      window.alert('Unable to add this product to the cart.')
       return
     }
 
-    dispatch(addToCart(productData))
+    const productAdd = await fetch(`/api/auth/user/${userId}/cart/${productId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ 
+        name: productData.name,
+        price: productData.price, 
+        imgUrl: productData.imageUrl
+      })
+    })
+
+    if (!productAdd.ok) {
+      const errorText = await productAdd.text()
+      throw new Error(errorText || `Request failed with status ${productAdd.status}`)
+    }
+
+    const cartResponse = await productAdd.json()
+    console.log('Product data:', cartResponse)
+    window.alert('Product added to cart.')
   }
 
   const handleBuyProduct = () => {
@@ -116,7 +146,7 @@ function ProductDetail({ productId }) {
             <div className='mt-8 flex flex-col gap-3 sm:flex-row'>
               <button
                 type='button'
-                onClick={handleAddToCart}
+                onClick={() => handleAddToCart(productData)}
                 className='inline-flex items-center justify-center rounded-full border border-slate-900 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white'
               >
                 Add to Cart

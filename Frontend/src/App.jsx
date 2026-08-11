@@ -6,6 +6,7 @@ import Disclaimer from './pages/disclaimer'
 import Footer from './components/footer'
 import Register from './pages/register'
 import Login from './pages/login'
+import Cart from './pages/cart'
 import ProductDetail from './pages/productDetail'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
@@ -23,6 +24,7 @@ function App() {
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login />} />
             <Route path='/product/:id' element={<ProductDetail />} />
+            <Route path='/cart' element={<Cart />} />
           </Routes>
         </main>
         <Footer />  // added the Footer component to the bottom of the page
