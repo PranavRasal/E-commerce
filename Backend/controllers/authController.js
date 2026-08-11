@@ -74,7 +74,8 @@ const loginUser = async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
-            generatedToken: token
+            generatedToken: token,
+            cart: user.cart || [] // Include the cart in the response, defaulting to an empty array if not present
         });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });

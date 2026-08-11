@@ -22,7 +22,11 @@ const userSchema = new moongoose.Schema({
     verified: {
         type: Boolean,
         default: false
-    }
+    },
+    cart: {
+        type: Array,
+        default: []
+    },
 });
 
 const User = moongoose.model('User', userSchema);
