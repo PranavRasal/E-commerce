@@ -92,4 +92,54 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-export { registerUser, loginUser, getAllUsers };
+const updateUserCart = async (req, res) => {
+    const { userId, productId: routeProductId } = req.params;
+    const { productid, price, imgUrl, name } = req.body ?? {};
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const cartProductId = routeProductId ?? productid;
+
+        if (!cartProductId) {
+            return res.status(400).json({ message: 'Product id is required' });
+        }
+
+        const existingItem = user.cart.find(
+            (item) => item.productid?.toString() === cartProductId.toString()
+        );
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            if (price === undefined || !imgUrl || !name) {
+                return res.status(400).json({
+                    message: 'price, imgUrl, and name are required when adding a new cart item',
+                });
+            }
+
+            user.cart.push({
+                productid: cartProductId,
+                quantity: 1,
+                price,
+                imgUrl,
+                name,
+            });
+        }
+
+        await user.save();
+
+        res.json({
+            message: 'Cart updated successfully',
+            cart: user.cart,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+export { registerUser, loginUser, getAllUsers, updateUserCart };

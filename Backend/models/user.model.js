@@ -23,10 +23,16 @@ const userSchema = new moongoose.Schema({
         type: Boolean,
         default: false
     },
-    cart: {
-        type: Array,
-        default: []
-    },
+    cart: [
+        {
+        productid : { type: String , required: true },
+        quantity : { type: Number , required: true },
+        price : { type: Number , required: true },
+        imgUrl : { type: String , required: true },
+        name : { type: String , required: true }
+    }
+    ]
+        
 });
 
 const User = moongoose.model('User', userSchema);
