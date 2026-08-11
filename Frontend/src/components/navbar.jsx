@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 function navbar() {
   const { user , setUser , logout} = useContext(AuthContext);
   const cartItems = useSelector((state) => state.cart?.cartItems ?? []);
+  const cartCount = cartItems.reduce((total, item) => total + (item.quantity ?? 1), 0);
   const navigate = useNavigate();
 
   const logoutButton = () => {
@@ -30,7 +31,7 @@ function navbar() {
         <nav className='flex flex-wrap items-center justify-end gap-2'>
           <Link to='/' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Home</Link>
           <Link to='/shop' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Shop</Link>
-          <Link to='/cart' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Cart ({cartItems.length})</Link>
+          <Link to='/cart' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Cart ({cartCount})</Link>
           <Link to='/orders' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Orders</Link>
 
           {user ? (
