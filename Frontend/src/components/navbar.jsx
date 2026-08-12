@@ -25,14 +25,14 @@ function navbar() {
           <span className='text-lg font-semibold'>E-comHub</span>
         </Link>
         {user && (
-          <span className='text-xl text-sm text-white'>Welcome, {user.name}</span>
+          <span className='text-sm text-white'>Welcome, {user.name}</span>
         )}
 
         <nav className='flex flex-wrap items-center justify-end gap-2'>
           <Link to='/' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Home</Link>
           
           <Link to='/cart' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Cart </Link>
-          <Link to='/orders' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Orders</Link>
+          <Link to='/order' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Orders</Link>
 
           {user ? (
             user.role === 'admin' ? (

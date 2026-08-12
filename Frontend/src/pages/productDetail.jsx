@@ -68,8 +68,31 @@ function ProductDetail({ productId }) {
     navigate(`/product/${id}/edit`)
   }
 
-  const handleDeleteProduct = () => {
-    window.alert('Delete product flow is not available yet.')
+  const handleDeleteProduct = async() => {
+    const deleteProduct = window.confirm('Are you sure you want to delete this product? This action cannot be undone.')
+    if (!deleteProduct) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/product/${productData._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.generatedToken}`,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`)
+      }
+      navigate('/')
+      window.alert('Product deleted successfully.')
+      
+    } catch (err) {
+      console.error('Error deleting product:', err)
+      window.alert('Failed to delete product.')
+    }
   }
 
   useEffect(() => {

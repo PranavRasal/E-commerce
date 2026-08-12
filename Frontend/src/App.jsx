@@ -10,6 +10,7 @@ import Cart from './pages/cart'
 import ProductDetail from './pages/productDetail'
 import ProductMod from './components/productMod.jsx'
 import Admin from './pages/admin.jsx'
+import Order from './pages/order.jsx'
 import CreateProduct from './pages/createProduct.jsx'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
@@ -31,6 +32,7 @@ function App() {
             <Route path='/admin' element={<Admin />} />
             <Route path='/create-product' element={<CreateProduct />} />
             <Route path='/cart' element={<Cart />} />
+            <Route path='/order' element={<Order />} />
           </Routes>
         </main>
         <Footer />  // added the Footer component to the bottom of the page
