@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useContext } from 'react'
 import { useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { addToCart } from '../redux/cardSlice'
 import { AuthContext } from '../context/authContract.js'
@@ -11,6 +12,7 @@ function ProductDetail({ productId }) {
   const [error, setError] = useState('')
   const { id: routeId } = useParams()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { user } = useContext(AuthContext)
 
   const id = routeId
@@ -63,7 +65,7 @@ function ProductDetail({ productId }) {
   }
 
   const handleUpdateProduct = () => {
-    window.alert('Update product flow is not available yet.')
+    navigate(`/product/${id}/edit`)
   }
 
   const handleDeleteProduct = () => {
@@ -167,7 +169,7 @@ function ProductDetail({ productId }) {
                   onClick={handleUpdateProduct}
                   className='inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700'
                 >
-                  Update Product
+                  Edit Product
                 </button>
 
                 <button

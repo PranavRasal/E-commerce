@@ -30,8 +30,8 @@ function navbar() {
 
         <nav className='flex flex-wrap items-center justify-end gap-2'>
           <Link to='/' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Home</Link>
-          <Link to='/shop' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Shop</Link>
-          <Link to='/cart' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Cart ({cartCount})</Link>
+          
+          <Link to='/cart' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Cart </Link>
           <Link to='/orders' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Orders</Link>
 
           {user ? (
@@ -43,11 +43,11 @@ function navbar() {
             ) : (
               <>
                 
-                <button onClick={logoutButton} className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Logout</button>
+                <button onClick={logoutButton} className='rounded-full px-3 py-1 transition hover:bg-red-500 hover:text-gray-800'>Logout</button>
               </>
             )
           ) : (
-            <Link to='/login' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Login</Link>
+            <Link to='/login' className='rounded-full px-3 py-1 transition hover:bg-green-400 hover:text-gray-800'>Login</Link>
           )}
         </nav>
       </div>

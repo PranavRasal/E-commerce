@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/authContract.js'
 
 function Cart() {
   const { user } = useContext(AuthContext)
+  const navigate = useNavigate()
   const [cartItems, setCartItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -73,6 +75,7 @@ function Cart() {
             {cartItems.map((item) => (
               <li
                 key={item.productid ?? item._id}
+                onClick={() => navigate(`/product/${item.productid ?? item._id}`)}
                 className='flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white text-left shadow-sm transition hover:-translate-y-1 hover:shadow-md'
               >
                 <img

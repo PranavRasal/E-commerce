@@ -75,12 +75,16 @@ export const updateProduct = async (req , res) =>{
         if(!product){
             return res.status(404).json({message : "Product not found"});
         }
-        const { name, description, price, category, stock } = req.body;
-    let image = req.file ? req.file.path : product.imageUrl; // Use existing image if no new image is uploaded
-        if(image !== product.imageUrl){
+        const { name, description, price, category, stock, imageUrl } = req.body;
+        let image = product.imageUrl;
+
+        if(req.file){
+            image = req.file.path;
             // Upload new image to Cloudinary
             const result = await cloudinary.uploader.upload(image);
             image = result.secure_url;
+        } else if(imageUrl){
+            image = imageUrl;
         }
         const updatedProduct = await Product.findByIdAndUpdate(req.params.id, { 
             name : name || product.name, 

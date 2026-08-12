@@ -8,6 +8,9 @@ import Register from './pages/register'
 import Login from './pages/login'
 import Cart from './pages/cart'
 import ProductDetail from './pages/productDetail'
+import ProductMod from './components/productMod.jsx'
+import Admin from './pages/admin.jsx'
+import CreateProduct from './pages/createProduct.jsx'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -24,6 +27,9 @@ function App() {
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login />} />
             <Route path='/product/:id' element={<ProductDetail />} />
+            <Route path='/product/:id/edit' element={<ProductMod />} />
+            <Route path='/admin' element={<Admin />} />
+            <Route path='/create-product' element={<CreateProduct />} />
             <Route path='/cart' element={<Cart />} />
           </Routes>
         </main>
