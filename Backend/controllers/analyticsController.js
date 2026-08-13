@@ -10,8 +10,8 @@ const getAnalyticsData = async (req, res) => {
 
     const orders = await Order.find({}) ; 
 
-    const totalRevenue = orders.reduce((acc, order) => acc + order.totalAmount, 0);
-     // Calculate total revenue from all orders
+    const totalRevenue = orders.filter(order => order.status === 'delivered').reduce((acc, order) => acc + order.totalAmount, 0);
+     // Calculate total revenue from delivered orders only
 
 
 
