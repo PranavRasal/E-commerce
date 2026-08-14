@@ -153,4 +153,23 @@ const getUserCart = async (req, res) => {
     }
 };
 
-export { registerUser, loginUser, getAllUsers, updateUserCart, getUserCart };
+const deleteCartItem = async (req, res) => {
+    const { userId, productId } = req.params;
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.cart = user.cart.filter((item) => item.productid?.toString() !== productId.toString());
+        await user.save();
+
+        res.json({ message: 'Item removed from cart successfully', cart: user.cart });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+export { registerUser, loginUser, getAllUsers, updateUserCart, getUserCart, deleteCartItem };

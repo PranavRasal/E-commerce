@@ -9,6 +9,30 @@ function Cart() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const handleDeleteItem = async (userId, productId) => {
+    try {
+      const response = await fetch(`/api/auth/user/${userId}/cart/${productId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${user.generatedToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      setCartItems((prevItems) =>
+        prevItems.filter(
+          (item) => (item.productid ?? item._id)?.toString() !== productId.toString(),
+        ),
+      );
+    } catch (err) {
+      console.error("Error deleting cart item:", err);
+      setError(err.message || "Unable to delete cart item");
+    }
+  };
+
   const totalAmount = cartItems.reduce(
     (sum, item) => sum + Number(item.price) * Number(item.quantity),
     0,
@@ -103,7 +127,10 @@ function Cart() {
                    <button className="ml-auto rounded-full bg-green-400 px-3 py-1 text-sm font-semibold text-white  hover:bg-green-600 mb-3 mr-3">
                       Buy
                     </button>
-                   <button className="ml-auto rounded-full bg-red-400 px-3 py-1 text-sm font-semibold text-white transition hover:bg-red-600 mb-3 mr-3">
+                   <button className="ml-auto rounded-full bg-red-400 px-3 py-1 text-sm font-semibold text-white transition hover:bg-red-600 mb-3 mr-3"  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteItem(user._id ?? user.id, item.productid ?? item._id);
+                   }}>
                       Delete
                     </button>
                     </div>
