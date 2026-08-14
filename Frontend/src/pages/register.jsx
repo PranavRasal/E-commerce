@@ -17,6 +17,12 @@ function register() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Request failed with status ${response.status}`);
+      }
+
       const data = await response.json();
       if (data.generatedToken) {
         login(data);
@@ -52,14 +58,32 @@ function register() {
             required
             className='w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
           />
-          <input
+          { verified && <input
+            type='text'
+            placeholder='OTP'
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+            required
+            className='w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
+          />
+
+          }
+          { verified && <input
             type='password'
             placeholder='Password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             className='w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
-          />
+          />}
+          {!verified && 
+          <button
+            type='button'
+            className='w-full rounded-lg bg-slate-900 px-4 py-3 font-semibold text-white transition hover:bg-slate-800' onClick={handleVerifyEmail}
+          >
+            verify your email
+          </button> }
+          {verified && 
           <button
             type='submit'
             className='w-full rounded-lg bg-slate-900 px-4 py-3 font-semibold text-white transition hover:bg-slate-800'

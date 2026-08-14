@@ -9,56 +9,109 @@ const generateToken = (user) => {
     });
 }
 
+const otpStore = new Map();
 
+const normalizeEmail = (email = '') => email.trim().toLowerCase();
+
+const verify = async(req, res) => {
+    const { email, name } = req.body ?? {};
+    try {
+        const normalizedEmail = normalizeEmail(email);
+
+        if (!normalizedEmail) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        const user = await User.findOne({ email: normalizedEmail });
+        if (user) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
+        otpStore.set(normalizedEmail, {
+            email: normalizedEmail,
+            name: name ?? 'user',
+            otp,
+            expiresAt: Date.now() + 10 * 60 * 1000,
+        });
+
+        const message = `Welcome ${name ?? 'user'}, your account is being created.\nYour OTP is: ${otp}. Do not share this with anyone. It will expire in 10 minutes.`;
+        await sendEmail(normalizedEmail, 'Account Created', message);
+
+        return res.status(200).json({ message: 'OTP sent successfully' });
+    } catch (error) {
+        return res.status(500).json({ message: 'Server error' });
+    }
+};
+ 
 // Register a new user
 const registerUser = async (req, res) => {
-    const { name, email, password } = req.body ?? {}; 
+    const { name, email, password, otp } = req.body ?? {};
     try {
-        // Check if user already exists
-        const existingUser = await User.findOne({ email });
+        const normalizedEmail = normalizeEmail(email);
+
+        if (!name || !normalizedEmail || !password || !otp) {
+            return res.status(400).json({ message: 'name, email, password and otp are required' });
+        }
+
+        const existingUser = await User.findOne({ email: normalizedEmail });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
+
+        const otpRecord = otpStore.get(normalizedEmail);
+        if (!otpRecord) {
+            return res.status(400).json({ message: 'OTP not requested for this email' });
+        }
+
+        if (normalizedEmail !== normalizeEmail(otpRecord.email)) {
+            return res.status(400).json({ message: 'Email does not match the one used for OTP request' });
+        }
+
+        if (Date.now() > otpRecord.expiresAt) {
+            otpStore.delete(normalizedEmail);
+            return res.status(400).json({ message: 'OTP expired. Please request a new OTP' });
+        }
+
+        if (String(otp).trim() !== String(otpRecord.otp)) {
+            return res.status(400).json({ message: 'Invalid OTP' });
+        }
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         const newUser = await User.create({
-            name,   
-            email,  
-            password: hashedPassword
+            name,
+            email: normalizedEmail,
+            password: hashedPassword,
+            verified: true,
         });
-        if(newUser){
-            const otp = Math.floor(100000 + Math.random() * 900000); // Generate a random 6-digit OTP
-            const message = 
-            `welcome ${name}, your account has been created successfully.
-            Your OTP is: ${otp}`;
-            await sendEmail(email, 'Account Created', message); // Send the OTP email
 
-            res.status(201).json({ 
+        otpStore.delete(normalizedEmail);
+
+        if (newUser) {
+            return res.status(201).json({
                 _id: newUser._id,
                 name: newUser.name,
                 email: newUser.email,
+                verified: newUser.verified,
                 generatedToken: generateToken(newUser),
-                message: 'User registered successfully. Please check your email for the OTP.',
+                message: 'User registered successfully.',
             });
-        }else{
-            res.status(400).json({ message: 'Invalid user data' });
         }
 
-        // await newUser.save();
-        // res.status(201).json({ message: 'User registered successfully' });
-        
+        return res.status(400).json({ message: 'Invalid user data' });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        return res.status(500).json({ message: 'Server error' });
     }
-
-}
+};
 
 // Login user
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ email });
+        const normalizedEmail = normalizeEmail(email);
+        const user = await User.findOne({ email: normalizedEmail });
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
@@ -172,4 +225,4 @@ const deleteCartItem = async (req, res) => {
     }
 };
 
-export { registerUser, loginUser, getAllUsers, updateUserCart, getUserCart, deleteCartItem };
+export { registerUser, loginUser, getAllUsers, updateUserCart, getUserCart, deleteCartItem , verify};
