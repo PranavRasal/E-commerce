@@ -6,32 +6,68 @@ function register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
+  const [verified, setVerified] = useState(false);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const handleVerifyEmail = async () => {
+    if (!name || !email) {
+      alert('Please enter your name and email first.');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email })
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.message || `Request failed with status ${response.status}`);
+      }
+
+      setVerified(true);
+      alert(data.message || 'OTP sent successfully.');
+    } catch (error) {
+      console.error('Error during email verification:', error);
+      alert(error.message || 'Unable to verify email.');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!verified) {
+      alert('Please verify your email first.');
+      return;
+    }
+
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
+        body: JSON.stringify({ name, email, password, otp })
       });
 
+      const data = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Request failed with status ${response.status}`);
+        throw new Error(data.message || `Request failed with status ${response.status}`);
       }
 
-      const data = await response.json();
       if (data.generatedToken) {
         login(data);
         navigate('/');
       }
     } catch (error) {
       console.error('Error during registration:', error);
+      alert(error.message || 'Registration failed.');
     }
-  }
+  };
 
   return (
     <div className='min-h-[70vh] bg-slate-50 px-4 py-10 flex items-center justify-center'>
@@ -58,38 +94,46 @@ function register() {
             required
             className='w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
           />
-          { verified && <input
-            type='text'
-            placeholder='OTP'
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            required
-            className='w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
-          />
+          {verified && (
+            <input
+              type='text'
+              placeholder='OTP'
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              required
+              className='w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
+            />
+          )}
 
-          }
-          { verified && <input
-            type='password'
-            placeholder='Password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className='w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
-          />}
-          {!verified && 
-          <button
-            type='button'
-            className='w-full rounded-lg bg-slate-900 px-4 py-3 font-semibold text-white transition hover:bg-slate-800' onClick={handleVerifyEmail}
-          >
-            verify your email
-          </button> }
-          {verified && 
-          <button
-            type='submit'
-            className='w-full rounded-lg bg-slate-900 px-4 py-3 font-semibold text-white transition hover:bg-slate-800'
-          >
-            Register
-          </button>
+          {verified && (
+            <input
+              type='password'
+              placeholder='Password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className='w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
+            />
+          )}
+
+          {!verified && (
+            <button
+              type='button'
+              className='w-full rounded-lg bg-slate-900 px-4 py-3 font-semibold text-white transition hover:bg-slate-800'
+              onClick={handleVerifyEmail}
+            >
+              Verify your email
+            </button>
+          )}
+
+          {verified && (
+            <button
+              type='submit'
+              className='w-full rounded-lg bg-slate-900 px-4 py-3 font-semibold text-white transition hover:bg-slate-800'
+            >
+              Register
+            </button>
+          )}
         </form>
 
         <p className='mt-5 text-center text-sm text-slate-600'>
