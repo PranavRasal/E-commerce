@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser , loginUser , getAllUsers , updateUserCart , getUserCart, deleteCartItem, verify } from '../controllers/authController.js';
+import { registerUser , loginUser , getAllUsers , updateUserCart , getUserCart, deleteCartItem, verify, updateUserAddress } from '../controllers/authController.js';
 import protect from '../middleware/authmiddleware.js';
 import admin from '../middleware/adminMiddleware.js';
 
@@ -16,5 +16,8 @@ router.get('/users', protect , admin , getAllUsers); // for admin only, you can 
 router.put('/user/:userId/cart/:productId', protect, updateUserCart); // Update a single cart item by product id
 router.get('/user/:userId/cart', protect, getUserCart); // Get the cart for a specific user
 router.delete('/user/:userId/cart/:productId', protect, deleteCartItem); // Delete a single cart item by product id
+
+// Address route
+router.put('/user/:userId/address', protect, updateUserAddress); // Update the address for a specific user
 
 export default router;

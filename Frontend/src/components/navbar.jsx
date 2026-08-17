@@ -33,7 +33,9 @@ function navbar() {
           
           <Link to='/cart' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Cart </Link>
           <Link to='/order' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>Orders</Link>
-
+          {user &&(
+             <Link to='/profile' className='rounded-full px-3 py-1 transition hover:bg-white hover:text-gray-800'>profile</Link>
+          )}
           {user ? (
             user.role === 'admin' ? (
               <>

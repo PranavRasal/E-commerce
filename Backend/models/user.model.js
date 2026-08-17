@@ -31,8 +31,14 @@ const userSchema = new moongoose.Schema({
         imgUrl : { type: String , required: true },
         name : { type: String , required: true }
     }
-    ]
-        
+    ] ,
+    address: {
+        fullName: { type: String },
+        street: { type: String },
+        city: { type: String },
+        state: { type: String },
+        postalCode: { type: String }
+    }
 });
 
 const User = moongoose.model('User', userSchema);

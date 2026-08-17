@@ -128,12 +128,15 @@ const loginUser = async (req, res) => {
             email: user.email,
             role: user.role,
             generatedToken: token,
-            cart: user.cart || [] // Include the cart in the response, defaulting to an empty array if not present
+            cart: user.cart || [], // Include the cart in the response, defaulting to an empty array if not present
+            address: user.address || null
         });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+
 
 //get all users
 const getAllUsers = async (req, res) => {
@@ -225,4 +228,34 @@ const deleteCartItem = async (req, res) => {
     }
 };
 
-export { registerUser, loginUser, getAllUsers, updateUserCart, getUserCart, deleteCartItem , verify};
+const updateUserAddress = async (req, res) => {
+    const { userId } = req.params;
+    const { fullName, street, city, state, postalCode } = req.body ?? {};
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.address = {
+            fullName: fullName ?? user.address?.fullName,
+            street: street ?? user.address?.street,
+            city: city ?? user.address?.city,
+            state: state ?? user.address?.state,
+            postalCode: postalCode ?? user.address?.postalCode,
+        };
+
+        await user.save();
+
+        res.json({
+            message: 'Address updated successfully',
+            address: user.address,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+export { registerUser, loginUser, getAllUsers, updateUserCart, getUserCart, deleteCartItem , verify, updateUserAddress};

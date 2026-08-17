@@ -13,6 +13,7 @@ import Admin from './pages/admin.jsx'
 import Order from './pages/order.jsx'
 import UpdateStatus from './pages/updateStatus.jsx'
 import CreateProduct from './pages/createProduct.jsx'
+import Profile from './pages/profile.jsx'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
             <Route path='/cart' element={<Cart />} />
             <Route path='/order' element={<Order />} />
             <Route path='/update-status' element={<UpdateStatus />} />
+            <Route path='/profile' element={<Profile />} />
           </Routes>
         </main>
         <Footer />  // added the Footer component to the bottom of the page
