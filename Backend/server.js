@@ -10,11 +10,25 @@ import analyticsRoutes from './routes/analyticsRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 6000;
+let databaseConnection;
 
-connectDB();
+const ensureDatabaseConnection = async (req, res, next) => {
+  try {
+    databaseConnection ??= connectDB();
+    await databaseConnection;
+    next();
+  } catch (error) {
+    databaseConnection = undefined;
+    next(error);
+  }
+};
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.get('/', (req, res) => {
+  res.json({ message: 'API is running' });
+});
+app.use(ensureDatabaseConnection);
 
 app.use('/api/auth' , authRoutes);
 app.use('/api/product' , productRoutes); 
@@ -31,9 +45,10 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-})
-// app.get('/', (req, res) => {
-//   res.send('API is running...');
-// })
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+export default app;
