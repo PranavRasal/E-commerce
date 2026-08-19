@@ -2,16 +2,22 @@ import React, { useEffect, useState } from 'react'
 import { useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { addToCart } from '../redux/cardSlice'
+import { useLocation } from 'react-router-dom'
 import { AuthContext } from '../context/authContract.js'
 
 function ProductDetail({ productId }) {
   const [productData, setProductData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const location = useLocation()
+  const [showPaymentOptions, setShowPaymentOptions] = useState(
+    Boolean(location.state?.openCheckout),
+  )
+  const [paymentMethod, setPaymentMethod] = useState('')
+  const [quantity, setQuantity] = useState(location.state?.quantity ?? 1)
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false)
+  const [orderError, setOrderError] = useState('')
   const { id: routeId } = useParams()
-  const dispatch = useDispatch()
   const navigate = useNavigate()
   const { user } = useContext(AuthContext)
 
@@ -60,8 +66,73 @@ function ProductDetail({ productId }) {
       return
     }
 
-    dispatch(addToCart(productData))
-    window.alert('Product added to cart. Checkout flow is not available yet.')
+    if (!user) {
+      window.alert('Please log in to buy this product.')
+      return
+    }
+
+    setPaymentMethod('')
+    setShowPaymentOptions(true)
+    setQuantity(1)
+    setOrderError('')
+  }
+
+  const handleOnlinePayment = () => {
+    window.alert('Online payment route is under development.')
+  }
+
+  const handleConfirmOrder = async () => {
+    const storedUser = JSON.parse(localStorage.getItem('userInfo') || 'null')
+    const token = user?.generatedToken ?? storedUser?.generatedToken
+    const userId = user?._id ?? user?.id
+    const productId = productData?._id ?? productData?.id
+    const address = user?.address
+
+    if (!token || !userId || !productId) {
+      setOrderError('Please log in again before placing your order.')
+      return
+    }
+
+    const requiredAddressFields = ['fullName', 'street', 'city', 'state', 'postalCode']
+    if (!address || requiredAddressFields.some((field) => !address[field])) {
+      setOrderError('Please add a complete delivery address to your profile first.')
+      return
+    }
+
+    const totalAmount = Number(productData.price) * quantity
+
+    try {
+      setIsSubmittingOrder(true)
+      setOrderError('')
+      const response = await fetch('/api/order/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          userId,
+          products: [{ productid: productId, quantity, price: totalAmount }],
+          address,
+          totalAmount,
+          paymentid: 'cash on delivery',
+        }),
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(errorText || `Request failed with status ${response.status}`)
+      }
+
+      setPaymentMethod('')
+      setShowPaymentOptions(false)
+      window.alert('Order placed successfully.')
+    } catch (err) {
+      console.error('Error placing order:', err)
+      setOrderError(err.message || 'Unable to place order.')
+    } finally {
+      setIsSubmittingOrder(false)
+    }
   }
 
   const handleUpdateProduct = () => {
@@ -180,11 +251,72 @@ function ProductDetail({ productId }) {
               <button
                 type='button'
                 onClick={handleBuyProduct}
-                className='inline-flex items-center justify-center rounded-full bg-emerald-600 ml-6 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700'
+                className='inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700'
               >
                 Buy Product
               </button>
             </div>
+
+            {user && showPaymentOptions && !paymentMethod && (
+              <div className='mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4'>
+                <p className='text-sm font-semibold text-slate-900'>Choose payment method</p>
+                <div className='mt-3 flex flex-col gap-3 sm:flex-row'>
+                  <button
+                    type='button'
+                    onClick={handleOnlinePayment}
+                    className='rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-600 hover:text-emerald-700'
+                  >
+                    Pay Online
+                  </button>
+                  <button
+                    type='button'
+                    onClick={() => setPaymentMethod('cash')}
+                    className='rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700'
+                  >
+                    Cash on Delivery
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {paymentMethod === 'cash' && (
+              <div className='mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4'>
+                <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+                  <div>
+                    <p className='text-sm font-semibold text-slate-900'>Cash on Delivery</p>
+                    <p className='mt-1 text-sm text-slate-600'>Total: ${(Number(productData.price) * quantity).toFixed(2)}</p>
+                  </div>
+                  <div className='flex items-center gap-3'>
+                    <button
+                      type='button'
+                      onClick={() => setQuantity((currentQuantity) => Math.max(1, currentQuantity - 1))}
+                      className='h-9 w-9 rounded-full border border-slate-300 bg-white text-lg font-semibold text-slate-700'
+                      aria-label='Decrease quantity'
+                    >
+                      -
+                    </button>
+                    <span className='min-w-6 text-center font-semibold text-slate-900'>{quantity}</span>
+                    <button
+                      type='button'
+                      onClick={() => setQuantity((currentQuantity) => currentQuantity + 1)}
+                      className='h-9 w-9 rounded-full border border-slate-300 bg-white text-lg font-semibold text-slate-700'
+                      aria-label='Increase quantity'
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <button
+                  type='button'
+                  onClick={handleConfirmOrder}
+                  disabled={isSubmittingOrder}
+                  className='mt-4 w-full rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60'
+                >
+                  {isSubmittingOrder ? 'Placing Order...' : 'Confirm Order'}
+                </button>
+                {orderError && <p className='mt-3 text-sm text-red-600'>{orderError}</p>}
+              </div>
+            )}
             {user?.role === 'admin' && (
               <div className='mt-2 flex flex-col gap-3 sm:flex-row'>
                 <button

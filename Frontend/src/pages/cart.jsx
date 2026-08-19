@@ -124,7 +124,12 @@ function Cart() {
                     </p>
                    </div>
                    <div className="flex flex-row items-end justify-between p-3">
-                   <button className="ml-auto rounded-full bg-green-400 px-3 py-1 text-sm font-semibold text-white  hover:bg-green-600 mb-3 mr-3">
+                   <button className="ml-auto rounded-full bg-green-400 px-3 py-1 text-sm font-semibold text-white  hover:bg-green-600 mb-3 mr-3" onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/product/${item.productid ?? item._id}`, {
+                      state: { openCheckout: true, quantity: item.quantity },
+                    });
+                   }}>
                       Buy
                     </button>
                    <button className="ml-auto rounded-full bg-red-400 px-3 py-1 text-sm font-semibold text-white transition hover:bg-red-600 mb-3 mr-3"  onClick={(e) => {
