@@ -3,7 +3,7 @@ import admin from '../middleware/adminMiddleware.js';
 import protect from '../middleware/authmiddleware.js';
 import { createProduct , getAllProducts , getProductById , updateProduct , deleteProduct } from '../controllers/productController.js';
 import multer from 'multer';
-const upload = multer({ dest: 'uploads/' }); // Configure multer to store uploaded files in the 'uploads' directory
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 

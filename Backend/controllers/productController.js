@@ -1,6 +1,18 @@
 import Product from "../models/product.model.js";
 import cloudinary from "../config/cloudinary.js";
 
+const uploadImage = (file) => new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream((error, result) => {
+        if (error) {
+            reject(error);
+            return;
+        }
+        resolve(result);
+    });
+
+    stream.end(file.buffer);
+});
+
 // Create a new product
 export const createProduct = async (req, res) => {
   try {
@@ -8,10 +20,7 @@ export const createProduct = async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ message: "Product image is required" });
         }
-        const image = req.file.path; // Assuming you're using multer for file uploads
-
-    // Upload image to Cloudinary
-    const result = await cloudinary.uploader.upload(image);
+    const result = await uploadImage(req.file);
 
     // Create new product
     const product = new Product({
@@ -79,9 +88,7 @@ export const updateProduct = async (req , res) =>{
         let image = product.imageUrl;
 
         if(req.file){
-            image = req.file.path;
-            // Upload new image to Cloudinary
-            const result = await cloudinary.uploader.upload(image);
+            const result = await uploadImage(req.file);
             image = result.secure_url;
         } else if(imageUrl){
             image = imageUrl;
