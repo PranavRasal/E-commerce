@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-dotenv.config();
+dotenv.config({ quiet: true });
 // import connectDB from './config/dataBase.js';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
@@ -14,10 +14,7 @@ const PORT = process.env.PORT || 6000;
 
 // connectDB();
 import dns from "dns";
-dotenv.config({
-    path : './.env'
-});
-    dns.setServers(["1.1.1.1","8.8.8.8"]);
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
     let isConnected = false;
     let connectionPromise = null;
