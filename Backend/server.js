@@ -9,7 +9,6 @@ import paymentRoutes from './routes/paymentRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 
 const app = express();
-const PORT = process.env.PORT || 6000;
 let databaseConnection;
 
 const ensureDatabaseConnection = async (req, res, next) => {
@@ -44,11 +43,5 @@ app.use((err, req, res, next) => {
   }
   next(err);
 });
-
-if (!process.env.VERCEL) {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-}
 
 export default app;
