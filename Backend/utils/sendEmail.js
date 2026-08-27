@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import dns from 'dns';
 
 const sendEmail = async (to , subject , message) => {
   const transporter = nodemailer.createTransport({
@@ -7,6 +8,9 @@ const sendEmail = async (to , subject , message) => {
     secure: false,
     requireTLS: true,
     family: 4,
+    lookup: (hostname, options, callback) => {
+      dns.lookup(hostname, { ...options, family: 4 }, callback);
+    },
     connectionTimeout: 10000,
     greetingTimeout: 10000,
     socketTimeout: 10000,
