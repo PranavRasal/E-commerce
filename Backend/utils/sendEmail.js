@@ -3,8 +3,8 @@ import dns from 'dns';
 
 const sendEmail = async (to , subject , message) => {
   const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: Number(process.env.SMTP_PORT || 587),
     secure: false,
     requireTLS: true,
     family: 4,
@@ -15,8 +15,8 @@ const sendEmail = async (to , subject , message) => {
     greetingTimeout: 10000,
     socketTimeout: 10000,
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: process.env.SMTP_USER || process.env.EMAIL_USER,
+      pass: process.env.SMTP_PASS || process.env.EMAIL_PASS,
     },
   });
 
