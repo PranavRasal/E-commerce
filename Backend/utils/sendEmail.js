@@ -6,6 +6,7 @@ const sendEmail = async (to , subject , message) => {
     port: 587,
     secure: false,
     requireTLS: true,
+    family: 4,
     connectionTimeout: 10000,
     greetingTimeout: 10000,
     socketTimeout: 10000,
