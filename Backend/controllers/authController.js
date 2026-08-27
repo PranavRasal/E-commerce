@@ -40,7 +40,8 @@ const verify = async(req, res) => {
 
         return res.status(200).json({ message: 'OTP sent successfully' });
     } catch (error) {
-        return res.status(500).json({ message: 'Server error' });
+        console.error('OTP verification email failed:', error.message);
+        return res.status(502).json({ message: 'Unable to send OTP email. Please try again later.' });
     }
 };
  

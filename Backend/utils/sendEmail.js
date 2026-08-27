@@ -2,6 +2,10 @@ import nodemailer from 'nodemailer';
 
 const sendEmail = async (to , subject , message) => {
   if (process.env.RESEND_API_KEY) {
+    if (!process.env.RESEND_FROM) {
+      throw new Error('RESEND_FROM is not configured');
+    }
+
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
