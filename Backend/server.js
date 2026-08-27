@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import cors from 'cors';
 dotenv.config({ quiet: true });
 // import connectDB from './config/dataBase.js';
 import authRoutes from './routes/authRoutes.js';
@@ -50,6 +51,7 @@ dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use(async (req, res, next) => {
         try {
