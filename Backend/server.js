@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 6000;
 // connectDB();
 import dns from "dns";
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
+dns.setDefaultResultOrder('ipv4first');
 
     let isConnected = false;
     let connectionPromise = null;
