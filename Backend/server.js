@@ -33,25 +33,33 @@ dns.setServers(["1.1.1.1", "8.8.8.8"]);
             return connectionPromise;
         }
 
-        connectionPromise = mongoose.connect(process.env.MONGO_DB_URL)
+        connectionPromise = mongoose.connect(process.env.MONGO_DB_URL, {
+                serverSelectionTimeoutMS: 10000,
+        })
             .then(() => {
                 console.log('Connected to MongoDB');
                 isConnected = true;
             })
             .catch((error) => {
                 connectionPromise = null;
-                console.warn('MongoDB connection failed:', error.message);
+                throw error;
             });
 
-        try {
-            await connectionPromise;
-        } catch (error) {
-            console.warn('MongoDB connection failed, continuing without a database connection:', error.message);
-        }
+        await connectionPromise;
     };
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(async (req, res, next) => {
+        try {
+            await connect();
+            next();
+        } catch (error) {
+            console.error('MongoDB connection failed:', error.message);
+            res.status(503).json({ message: 'Database unavailable. Please try again later.' });
+        }
+    });
 
 app.use('/api/auth' , authRoutes);
 app.use('/api/product' , productRoutes); 
@@ -68,19 +76,9 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-app.use(async (req, res, next) => {
-        try {
-            await connect();
-            next();
-        } catch (error) {
-            next(error);
-        }
-    });
-
     if (!process.env.VERCEL) {
     app.listen(PORT || 3000, async () => {
         console.log(`Server is running on port ${PORT || 3000}`);
-        await connect();
     });
 }
 

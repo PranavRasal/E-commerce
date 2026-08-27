@@ -2,6 +2,8 @@ import React, { useState, useContext } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { AuthContext } from '../context/authContract'
 
+const apiUrl = import.meta.env.VITE_URL_API?.replace(/\/$/, '') || '';
+
 function register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -18,7 +20,7 @@ function register() {
     }
 
     try {
-      const response = await fetch('/api/auth/verify-otp', {
+      const response = await fetch(`${apiUrl}/api/auth/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email })
@@ -47,7 +49,7 @@ function register() {
     }
 
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(`${apiUrl}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password, otp })
